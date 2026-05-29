@@ -1,11 +1,36 @@
 # Cursor Skills Sync
 
+Cursor extension that lets developers opt in to individual Cursor skills from shared team repositories or local projects — with full control over which skills are active and whether they apply at project or user level.
+
+## Why this extension exists
+
+Sharing Cursor skills across a development team sounds simple in practice it creates several real problems.
+
+**Skills accumulate silently.** When skills live in a shared git repo, pulling the latest branch can quietly introduce new skills without the developer noticing. There is no prompt, no review step — the skills just appear.
+
+**Agents pick up skills they should not.** Cursor agents scan all available skills and will use whichever one seems relevant. If a repo contains skills the developer did not intend to activate, an agent may invoke them unexpectedly, performing actions the user did not ask for.
+
+**Naming conflicts cause wrong-skill selection.** When multiple skills address similar tasks, an agent may pick the wrong one. Skills poorly matched to the current context, or skills with similar names and different purposes, produce unreliable agent behavior.
+
+**Poorly formed skills waste tokens.** A skill with a badly written prompt or an overly broad trigger can run on queries it was never meant for, burning tokens on every interaction.
+
+**Skills are project-scoped by default, user-scoping requires manual work.** Skills committed to a repo apply to that project only. Moving a skill to your personal `~/.cursor/skills` folder so it is available everywhere requires manual copying and ongoing maintenance.
+
+---
+
+Cursor Skills Sync solves these problems by giving each developer explicit, per-skill control:
+
+- **Browse** skills discovered from any number of sources (team repos, personal repos, local folders).
+- **Opt in** to only the skills you want active. Nothing is installed automatically on a pull.
+- **Choose scope** per skill — install to the current project or to your personal user-level skills folder.
+- **Stay current** with manual or scheduled refreshes that pull the latest skill content only for skills you have already opted in to.
+
 Cursor extension that discovers skills from configured local or git-backed source repos and copies them into native Cursor skill paths:
 
 - **Project:** `<workspace>/.cursor/skills/<skill-id>/`
 - **User:** `~/.cursor/skills/<skill-id>/`
 
-Only directories recorded in `.skills-sync-state.json` are removed on disable, so hand-authored skills are not deleted.W
+Only directories recorded in `.skills-sync-state.json` are removed on disable, so hand-authored skills are not deleted.
 
 ## Install
 
