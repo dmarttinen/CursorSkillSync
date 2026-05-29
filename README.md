@@ -27,6 +27,21 @@ npm run package
 
 Install the generated `.vsix` via **Extensions → … → Install from VSIX**.
 
+### Install Without Marketplace (GitHub Releases)
+
+1. Open the Releases page for this repository.
+2. Download the `.vsix` file from the desired release.
+3. In Cursor or VS Code, run **Extensions: Install from VSIX...**.
+4. Select the downloaded `.vsix` file.
+
+## Automated VSIX Releases
+
+This repository includes a GitHub Actions workflow that builds and attaches a VSIX to GitHub Releases.
+
+1. Bump `version` in `package.json`.
+2. Commit and push to `main`.
+3. Create and push a version tag such as `v0.1.1`.
+4. GitHub Actions builds the extension and uploads the VSIX to that release.
 ## Configuration
 
 User settings (`cursorSkillsSync.*`):

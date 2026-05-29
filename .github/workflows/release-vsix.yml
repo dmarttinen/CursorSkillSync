@@ -1,0 +1,49 @@
+name: Build and Publish VSIX to GitHub Releases
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile extension
+        run: npm run compile
+
+      - name: Package VSIX
+        run: npm run package
+
+      - name: Find VSIX
+        id: find_vsix
+        run: |
+          VSIX_FILE=$(ls -1 *.vsix | head -n 1)
+          if [ -z "$VSIX_FILE" ]; then
+            echo "No VSIX file found in repository root"
+            exit 1
+          fi
+          echo "vsix_file=$VSIX_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release and upload VSIX
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: ${{ steps.find_vsix.outputs.vsix_file }}
