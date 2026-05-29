@@ -5,6 +5,11 @@
   "version": "0.1.0",
   "publisher": "dmarttinen",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmarttinen/CursorSkillSync.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },

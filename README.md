@@ -37,6 +37,7 @@ Install the generated `.vsix` via **Extensions → … → Install from VSIX**.
 ## Automated VSIX Releases
 
 This repository includes a GitHub Actions workflow that builds and attaches a VSIX to GitHub Releases.
+It runs when you publish a GitHub Release or push a tag like `v0.1.1`.
 
 1. Bump `version` in `package.json`.
 2. Commit and push to `main`.
