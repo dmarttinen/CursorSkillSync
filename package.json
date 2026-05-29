@@ -1,0 +1,259 @@
+{
+  "name": "cursor-skills-sync",
+  "displayName": "Cursor Skills Sync",
+  "description": "Discover skills from configured repos and sync them to project or personal .cursor/skills",
+  "version": "0.1.0",
+  "publisher": "dmarttinen",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:cursorSkillsSync.skillsView",
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cursor-skills-sync",
+          "title": "Cursor Skills Sync",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "cursor-skills-sync": [
+        {
+          "id": "cursorSkillsSync.skillsView",
+          "name": "Skills"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "cursorSkillsSync.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "cursorSkillsSync.updateAll",
+        "title": "Update All",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "cursorSkillsSync.enable",
+        "title": "Enable Skill"
+      },
+      {
+        "command": "cursorSkillsSync.disable",
+        "title": "Disable Skill"
+      },
+      {
+        "command": "cursorSkillsSync.update",
+        "title": "Update Skill"
+      },
+      {
+        "command": "cursorSkillsSync.setInstallTarget",
+        "title": "Set Install Target…"
+      },
+      {
+        "command": "cursorSkillsSync.openSettings",
+        "title": "Open Settings",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "cursorSkillsSync.show",
+        "title": "Cursor Skills Sync: Show Skills View",
+        "category": "Cursor Skills Sync"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "cursorSkillsSync.refresh",
+          "when": "view == cursorSkillsSync.skillsView",
+          "group": "navigation"
+        },
+        {
+          "command": "cursorSkillsSync.updateAll",
+          "when": "view == cursorSkillsSync.skillsView",
+          "group": "navigation"
+        },
+        {
+          "command": "cursorSkillsSync.openSettings",
+          "when": "view == cursorSkillsSync.skillsView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "cursorSkillsSync.setInstallTarget",
+          "when": "view == cursorSkillsSync.skillsView && viewItem == cursorSkillsSync.skill",
+          "group": "1_modification"
+        },
+        {
+          "command": "cursorSkillsSync.setInstallTarget",
+          "when": "view == cursorSkillsSync.skillsView && viewItem == cursorSkillsSync.skillEnabled",
+          "group": "1_modification"
+        },
+        {
+          "command": "cursorSkillsSync.update",
+          "when": "view == cursorSkillsSync.skillsView && viewItem == cursorSkillsSync.skillEnabled",
+          "group": "2_update"
+        },
+        {
+          "command": "cursorSkillsSync.disable",
+          "when": "view == cursorSkillsSync.skillsView && viewItem == cursorSkillsSync.skillEnabled",
+          "group": "2_update"
+        },
+        {
+          "command": "cursorSkillsSync.enable",
+          "when": "view == cursorSkillsSync.skillsView && viewItem == cursorSkillsSync.skill",
+          "group": "2_update"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Cursor Skills Sync",
+      "properties": {
+        "cursorSkillsSync.sources": {
+          "type": "array",
+          "default": [],
+          "description": "Skill source repositories (local paths or git clones).",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "type"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Stable source identifier."
+              },
+              "label": {
+                "type": "string",
+                "description": "Display name in the tree view."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "local",
+                  "git"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "description": "Local repo root (must contain .cursor/skills)."
+              },
+              "url": {
+                "type": "string",
+                "description": "Git remote URL (type: git)."
+              },
+              "branch": {
+                "type": "string",
+                "default": "main",
+                "description": "Branch to clone/pull (type: git)."
+              },
+              "clonePath": {
+                "type": "string",
+                "description": "Clone directory. Defaults to ~/.cursor/skills-sync-cache/<id>."
+              },
+              "sparsePaths": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Sparse-checkout paths for this repo (default: .cursor). Use [\".cursor/skills\"] to fetch only skills."
+              },
+              "commitSha": {
+                "type": "string",
+                "description": "Optional commit SHA to pin. The extension verifies HEAD matches after clone/pull."
+              }
+            }
+          }
+        },
+        "cursorSkillsSync.gitSparseClone": {
+          "type": "boolean",
+          "default": true,
+          "description": "For git sources, clone only sparse-checkout paths instead of the full repository."
+        },
+        "cursorSkillsSync.gitSparseCheckoutPaths": {
+          "type": "array",
+          "default": [".cursor"],
+          "items": { "type": "string" },
+          "description": "Paths to include in sparse-checkout for git sources (default: .cursor)."
+        },
+        "cursorSkillsSync.gitPullOnUpdate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run git pull on Refresh and Update for git sources."
+        },
+        "cursorSkillsSync.syncSharedContext": {
+          "type": "boolean",
+          "default": true,
+          "description": "Copy root-level .md files (e.g. shared-context.md) from source skills folder on update."
+        },
+        "cursorSkillsSync.autoRefreshIntervalHours": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Every N hours: refresh the skills catalog and recopy all enabled (installed) skills from source. Set to 0 to disable."
+        },
+        "cursorSkillsSync.allowedSkillFileExtensions": {
+          "type": "array",
+          "default": [".md", ".txt", ".json", ".yaml", ".yml"],
+          "items": { "type": "string" },
+          "description": "File extensions allowed when copying skill directories. Files with other extensions are skipped."
+        },
+        "cursorSkillsSync.maxSkillFileSizeBytes": {
+          "type": "number",
+          "default": 524288,
+          "minimum": 1,
+          "description": "Maximum size in bytes for a single skill file. Larger files are skipped. Default: 512 KB."
+        },
+        "cursorSkillsSync.maxSkillTotalSizeBytes": {
+          "type": "number",
+          "default": 5242880,
+          "minimum": 1,
+          "description": "Maximum total size in bytes for all files in one skill directory. Default: 5 MB."
+        },
+        "cursorSkillsSync.maxSkillsPerSource": {
+          "type": "number",
+          "default": 100,
+          "minimum": 1,
+          "description": "Maximum number of skills discovered per source. Additional skills are ignored."
+        },
+        "cursorSkillsSync.maxWalkDepth": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "description": "Maximum directory depth when scanning skill directories. Deeper directories are skipped."
+        },
+        "cursorSkillsSync.warnOnContentChange": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a warning notification when skill content changes during an update."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.7.1",
+    "typescript": "^6.0.3"
+  }
+}

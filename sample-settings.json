@@ -1,0 +1,23 @@
+{
+  "cursorSkillsSync.sources": [
+    {
+      "id": "SkillsLocal",
+      "label": "Skills Local",
+      "type": "local",
+      "path": "c:/source/Skills"
+    },
+    {
+      "id": "SkillsRepo",
+      "label": "Skills Repo",
+      "type": "git",
+      "url": "https://path/_git/SkillsRepo",
+      "branch": "main",
+      "clonePath": "${userHome}/.cursor/skills-sync-cache/skills-repo"
+    }
+  ],
+  "cursorSkillsSync.gitSparseClone": true,
+  "cursorSkillsSync.gitSparseCheckoutPaths": [".cursor"],
+  "cursorSkillsSync.gitPullOnUpdate": true,
+  "cursorSkillsSync.syncSharedContext": true,
+  "cursorSkillsSync.autoRefreshIntervalHours": 0
+}
